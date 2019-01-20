@@ -9,7 +9,12 @@
     },
     {
       "src": "lightning.png",
-      "sizes": "192x192",
+      "sizes": "192x192 512X512",
+      "type": "image/png"
+    },
+    {
+      "src": "lightning.png",
+      "sizes": "512x512",
       "type": "image/png"
     }
   ],

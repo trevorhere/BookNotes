@@ -14,7 +14,8 @@
     "react-ui/node_modules"
   ],
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "heroku-ssl-redirect": "0.0.4"
   },
   "repository": {
     "type": "git",

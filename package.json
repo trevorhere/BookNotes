@@ -15,7 +15,8 @@
   ],
   "dependencies": {
     "express": "^4.16.4",
-    "heroku-ssl-redirect": "0.0.4"
+    "heroku-ssl-redirect": "0.0.4",
+    "react-materialize": "^2.6.0"
   },
   "repository": {
     "type": "git",

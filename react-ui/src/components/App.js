@@ -3,6 +3,7 @@ import { Route } from "react-router";
 import { Switch } from "react-router-dom";
 
 import HomePage from "./HomePage";
+import Nav from "./Nav";
 import "./styles/App.css";
 
 class App extends Component {
@@ -39,6 +40,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <Nav />
         <Switch>
           {/* <Route path="/login" component={LoginForm} />
           <Route path="/signup" component={SignupForm} />

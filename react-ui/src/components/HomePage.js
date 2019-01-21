@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import background from "../assets/city.jpeg";
 import { BarLoader } from "react-spinners";
+import { Col, Row, Preloader } from "react-materialize";
 
 const override = {
   display: "block",
@@ -35,6 +36,11 @@ class HomePage extends Component {
       <div style={componentStyle}>
         <div style={headerStyle}>
           <h3 style={titleStyle}>W E L C O M E</h3>
+          <Row>
+            <Col s={12}>
+              <Preloader size="small" color="red" />
+            </Col>
+          </Row>
           <BarLoader
             className={override}
             sizeUnit={"px"}

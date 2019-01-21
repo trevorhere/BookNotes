@@ -11,7 +11,7 @@ const override = {
 
 const componentStyle = {
   background: `linear-gradient(rgba(20,20,20, .75), rgba(20,20,20, .75)),url(${background})`,
-  height: "100vh",
+  height: "96vh",
   backgroundSize: "cover",
   display: "flex",
   alignItems: "center",

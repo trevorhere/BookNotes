@@ -5,6 +5,7 @@ import { Switch } from "react-router-dom";
 import Nav from "./Nav";
 import HomePage from "./HomePage";
 import LoginForm from "./LoginForm";
+import SignupForm from "./SignupForm";
 
 import "./styles/App.css";
 
@@ -15,6 +16,7 @@ const App = props => {
       {console.log("app", props)}
       <Switch>
         <Route path="/login" component={LoginForm} />
+        <Route path="/signup" component={SignupForm} />
         {/*  <Route path="/signup" component={SignupForm} />
           <Route path="/dashboard/team/:teamID/user/:userID" component={requireAuth(ViewUser)} />
           <Route path="/dashboard/team/:teamID/createuser" component={requireAuth(CreateUser)} />

@@ -12,7 +12,13 @@ class Nav extends Component {
 
     return (
       <div>
-        <NavItem onClick={() => console.log("test click")}>Signup</NavItem>
+        <NavItem
+          onClick={() => {
+            this.props.props.history.push(`/signup`);
+          }}
+        >
+          Signup
+        </NavItem>
         <NavItem
           onClick={() => {
             this.props.props.history.push(`/login`);

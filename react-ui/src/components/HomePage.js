@@ -34,6 +34,7 @@ class HomePage extends Component {
   render() {
     return (
       <div style={componentStyle}>
+        {console.log("homepage", this.props)}
         <div style={headerStyle}>
           <h3 style={titleStyle}>W E L C O M E</h3>
           <Row>

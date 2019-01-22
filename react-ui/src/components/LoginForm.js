@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { graphql } from "react-apollo";
-import { Row, Input, Button } from "react-materialize";
+import { Row, Col, Input, Card, CardPanel, Button } from "react-materialize";
 
 // import query from '../gql/queries/CurrentUser';
 // import mutation from '../gql/mutations/Login';
@@ -10,6 +10,7 @@ class LoginForm extends Component {
     super(props);
 
     this.state = {
+      name: "",
       email: "",
       password: ""
     };
@@ -32,17 +33,51 @@ class LoginForm extends Component {
     // });
   }
 
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value
+    });
+  };
+
   render() {
     return (
-      <div style={{ color: "#9D9C9D" }} className="container">
-        <h3 className="section-title">Login</h3>
-        <Row>
-          <Input type="password" label="password" s={12} />
-          <Input type="email" label="Email" s={12} />
-          <Button waves="light" style={{ float: "right" }}>
-            submit
-          </Button>
-        </Row>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "80vh"
+        }}
+      >
+        <Col
+          style={{
+            display: "flex"
+          }}
+        >
+          <Card
+            style={{}}
+            className="blue-grey darken-1"
+            textClassName="white-text"
+            title="Login"
+            actions={[
+              <Button waves="light" style={{ width: "80vw" }}>
+                submit
+              </Button>
+            ]}
+          >
+            <Input type="email" label="Email" />
+            <Input type="password" label="Password" />
+          </Card>
+        </Col>
+        {/* <CardPanel className="teal lighten-4 black-text">
+            <Input type="password" label="Password" s={12} />
+            <Input type="email" label="Email" s={12} />
+
+            <Button waves="light" style={{ float: "right" }}>
+              submit
+            </Button>
+          </CardPanel> */}
+        {/* <h3 className="section-title">Login</h3> */}
 
         {/* <form onSubmit={this.onSubmit.bind(this)} className="col s6">
           <div className="input-field">

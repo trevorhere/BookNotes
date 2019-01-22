@@ -14,6 +14,8 @@
     "react-ui/node_modules"
   ],
   "dependencies": {
+    "@material-ui/core": "^3.9.0",
+    "@material-ui/icons": "^3.0.2",
     "express": "^4.16.4",
     "heroku-ssl-redirect": "0.0.4",
     "react-materialize": "^2.6.0"

@@ -37,7 +37,7 @@ class SignupForm extends Component {
       <div style={{ color: "#9D9C9D" }} className="container">
         <h3 className="section-title">Signup</h3>
         <Row>
-          <Input type="password" label="password" s={12} />
+          <Input type="password" label="Password" s={12} />
           <Input type="email" label="Email" s={12} />
           <Button waves="light" style={{ float: "right" }}>
             submit

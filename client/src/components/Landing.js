@@ -42,13 +42,6 @@ class HomePage extends Component {
               <Preloader size="small" color="red" />
             </Col>
           </Row>
-          <BarLoader
-            className={override}
-            sizeUnit={"px"}
-            size={10}
-            color={"#F44336"}
-            loading={this.props.loading}
-          />
         </div>
       </div>
     );

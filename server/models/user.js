@@ -1,0 +1,84 @@
+const bcrypt = require("bcrypt-nodejs");
+const crypto = require("crypto");
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+const UserSchema = new Schema(
+  {
+    email: String,
+    password: String,
+    fullName: String,
+    userName: String,
+    books: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "book"
+      }
+    ]
+  },
+  { usePushEach: true }
+);
+
+// UserSchema.statics.createTeam = function(name, description, leaderID) {
+//   const Team = mongoose.model("team");
+
+//   return this.findById(leaderID).then(leader => {
+//     const team = new Team({ name, description, leader });
+//     leader.teams.push(team);
+//     return Promise.all([team.save(), leader.save()]).then(
+//       ([team, leader]) => team
+//     );
+//   });
+// };
+
+UserSchema.statics.fetchBooks = function(id) {
+  return this.findById(id)
+    .populate("books")
+    .then(user => user.books);
+};
+
+// UserSchema.statics.createList = function(id, name, description) {
+//   const List = mongoose.model("list");
+//   return this.findById(id).then(user => {
+//     const list = new List({ name, user, description });
+//     console.log(list);
+//     user.lists.push(list);
+//     return Promise.all([list.save(), user.save()]).then(([list, user]) => list);
+//   });
+// };
+
+// UserSchema.statics.fetchLists = function(id) {
+//   return this.findById(id)
+//     .populate("lists")
+//     .then(user => user.lists);
+// };
+
+UserSchema.pre("save", function save(next) {
+  const user = this;
+  if (!user.isModified("password")) {
+    return next();
+  }
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return next(err);
+    }
+    bcrypt.hash(user.password, salt, null, (err, hash) => {
+      if (err) {
+        return next(err);
+      }
+      user.password = hash;
+      next();
+    });
+  });
+});
+
+UserSchema.methods.comparePassword = function comparePassword(
+  candidatePassword,
+  cb
+) {
+  bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
+    cb(err, isMatch);
+  });
+};
+
+mongoose.model("user", UserSchema);

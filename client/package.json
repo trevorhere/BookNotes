@@ -1,8 +1,9 @@
 {
-  "name": "react-ui",
+  "name": "client",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^3.9.1",
     "apollo-boost": "^0.1.27",
     "graphql": "^14.1.1",
     "react": "^16.6.3",

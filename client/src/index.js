@@ -3,20 +3,25 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./components/App";
 import * as serviceWorker from "./serviceWorker";
+import { MuiThemeProvider } from "@material-ui/core/styles";
 
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "react-apollo";
 import { BrowserRouter } from "react-router-dom";
 import { Router, hashHistory, Route, IndexRoute } from "react-router";
 
+import { theme } from "./theme";
+
 const client = new ApolloClient({});
 
 const Root = () => {
   return (
     <ApolloProvider client={client}>
-      <BrowserRouter>
-        <Route path="/" component={App} />
-      </BrowserRouter>
+      <MuiThemeProvider theme={theme}>
+        <BrowserRouter>
+          <Route path="/" component={App} />
+        </BrowserRouter>
+      </MuiThemeProvider>
     </ApolloProvider>
   );
 };

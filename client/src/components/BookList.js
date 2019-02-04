@@ -36,14 +36,19 @@ const styles = {
   root: {
     display: "flex",
     flexWrap: "wrap",
+    alignSelf: "center",
     justifyContent: "start",
     overflow: "hidden",
-    margin: 10
+    marginTop: 100,
+    marginLeft: 40
     // backgroundColor: theme.palette.background.paper
+  },
+  check: {
+    width: "80vw"
   },
 
   fab: {
-    backgroundColor: "red",
+    backgroundColor: "primary",
     // position: "absolute",
     // bottom: 40,
     // right: 40,
@@ -56,51 +61,6 @@ const styles = {
   },
   darkButton: {}
 };
-
-const tileData = [
-  // {
-  //   img: blank,
-  //   title: "Image",
-  //   author: "author",
-  //   cols: 1
-  // },
-
-  {
-    img:
-      "https://global.penguinrandomhouse.com/wp-content/uploads/2017/12/QueenOfHearts.jpg",
-    title: "Image",
-    author: "author",
-    cols: 1
-  },
-
-  {
-    img: "https://mppl.org/wp-content/uploads/0-214x300.jpg",
-    title: "Image",
-    author: "author",
-    cols: 1
-  },
-  {
-    img:
-      "https://global.penguinrandomhouse.com/wp-content/uploads/2017/12/QueenOfHearts.jpg",
-    title: "Image",
-    author: "author",
-    cols: 1
-  },
-  {
-    img:
-      "https://marketplace.canva.com/MACXC0twKgo/1/0/thumbnail_large/canva-green-and-pink-science-fiction-book-cover-MACXC0twKgo.jpg",
-    title: "Image",
-    author: "author",
-    cols: 1
-  },
-  {
-    img:
-      "https://marketplace.canva.com/MACV2Ehunsw/1/0/thumbnail_large/canva-blue-photo-science-fiction-book-cover-MACV2Ehunsw.jpg",
-    title: "Image",
-    author: "author",
-    cols: 1
-  }
-];
 
 class BookList extends Component {
   constructor(props) {
@@ -253,14 +213,14 @@ class BookList extends Component {
                 />
               </DialogContent>
               <DialogActions>
-                <Button onClick={this.handleClose} color="primary">
+                <Button onClick={this.handleClose} color="secondary">
                   Cancel
                 </Button>
                 <Button
                   onClick={() => {
                     this.dialogueSubmit(addBook);
                   }}
-                  color="primary"
+                  color="secondary"
                 >
                   Submit
                 </Button>
@@ -295,7 +255,7 @@ class BookList extends Component {
               {this.renderDialogue()}
               {this.renderBookCard(user.books)}
               <Fab
-                color="primary"
+                color="secondary"
                 aria-label="Add"
                 onClick={this.handleClickOpen}
                 className={classes.fab}

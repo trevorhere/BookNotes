@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import background from "../assets/Books.jpeg";
+import background from "../assets/stars.jpg";
 import loginMutation from "../gql/mutations/Login";
 import currentUserQuery from "../gql/queries/CurrentUser";
 
@@ -9,20 +9,26 @@ import {
   withStyles,
   TextField,
   Button,
-  Typography
+  Typography,
+  Paper,
+  Icon,
+  Input,
+  InputAdornment
 } from "@material-ui/core";
+import { Lock } from "@material-ui/icons";
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    background: `linear-gradient(rgba(20,20,20, .99), rgba(20,20,20, .75)),url(${background})`,
-    height: "96vh",
+    //background: `linear-gradient(rgba(10,10,10, .0), rgba(20,20,20, .0)),url(${background})`,
+    background: `url(${background})`,
     backgroundSize: "cover",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textAlign: "center",
-    color: "white"
+    height: "100vh",
+    width: "100vw",
+    position: "fixed"
   },
   textField: {
     color: "#000"
@@ -33,31 +39,47 @@ const styles = theme => ({
   },
   title: {
     fontSize: "40px",
-    marginBottom: "10px"
+    marginBottom: "10px",
+    color: "white",
+    fontWeight: "100"
   },
   button: {
     //  margin: theme.spacing.unit
   },
   or: { paddingTop: "10px" },
-  multilineColor: {
-    color: "white",
+  input: {
+    color: "white !important",
     borderColor: "white"
   },
   cssLabel: {
-    color: `${theme.palette.secondary.main} !important`
+    color: "white"
   },
 
   cssOutlinedInput: {
     "&$cssFocused $notchedOutline": {
-      borderColor: `white !important`
+      borderColor: `${theme.palette.primary.main} !important`,
+      color: "white !important"
     }
   },
-
-  cssFocused: {},
+  multilineColor: {
+    color: "white !important"
+  },
+  input: {
+    color: "white !important"
+  },
+  multilineColor: {
+    color: "white !important"
+  },
 
   notchedOutline: {
     borderWidth: "1px",
-    borderColor: `${theme.palette.secondary.main} !important`
+    borderColor: "white !important"
+  },
+  paper: {
+    padding: "20px",
+    textAlign: "right",
+    fontWeight: "100",
+    fontSize: "85px"
   }
 });
 
@@ -70,12 +92,6 @@ class LoginForm extends Component {
       email: "",
       password: ""
     };
-  }
-
-  componentWillUpdate(nextProps) {
-    // if (!this.props.data.user && nextProps.data.user) {
-    //   this.props.history.push("/dashboard");
-    // }
   }
 
   onSubmit(event) {
@@ -110,38 +126,28 @@ class LoginForm extends Component {
         >
           <Grid item lg={3} md={3} xs={6}>
             <Typography
+              className={classes.paper}
+              variant={"title"}
+              align={"center"}
+              color={"primary"}
+            >
+              What have you been reading about?
+            </Typography>
+          </Grid>
+          <Grid item lg={3} md={3} xs={6}>
+            {/* <Typography
               className={classes.title}
               color={"secondary"}
               align={"center"}
             >
               Book Notes
-            </Typography>
+            </Typography> */}
 
-            <Button
-              color={"secondary"}
-              variant="outlined"
-              size="large"
-              fullWidth
-              className={classes.button}
-              onClick={() => {
-                this.props.history.push(`/signup`);
-              }}
-            >
-              Signup
-            </Button>
-            <Typography
-              className={classes.or}
-              variant={"title"}
-              align={"center"}
-              color={"secondary"}
-            >
-              or
-            </Typography>
             <TextField
               id="outlined-name"
-              label="Email"
+              label={`Email`}
               fullWidth
-              className={classes.textField}
+              style={{ color: "white !important" }}
               value={this.state.email}
               InputProps={{
                 classes: {
@@ -158,10 +164,12 @@ class LoginForm extends Component {
                 classes: {
                   root: classes.cssOutlinedInput,
                   focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline
+                  notchedOutline: classes.notchedOutline,
+                  input: classes.multilineColor
                 },
                 inputMode: "numeric"
               }}
+              className={classes.textField}
               onChange={this.handleChange("email")}
               margin="normal"
               variant="outlined"
@@ -186,7 +194,8 @@ class LoginForm extends Component {
                 classes: {
                   root: classes.cssOutlinedInput,
                   focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline
+                  notchedOutline: classes.notchedOutline,
+                  input: classes.multilineColor
                 },
                 inputMode: "numeric"
               }}
@@ -203,13 +212,34 @@ class LoginForm extends Component {
               variant="outlined"
               size="large"
               fullWidth
-              color={"secondary"}
+              color={"primary"}
               className={classes.button}
               onClick={() => {
                 this.onSubmit();
               }}
             >
               Login
+            </Button>
+            <Typography
+              className={classes.or}
+              variant={"title"}
+              align={"center"}
+              color={"primary"}
+            >
+              or
+            </Typography>
+            <br />
+            <Button
+              color={"secondary"}
+              variant="outlined"
+              size="large"
+              fullWidth
+              className={classes.button}
+              onClick={() => {
+                this.props.history.push(`/signup`);
+              }}
+            >
+              Signup
             </Button>
           </Grid>
         </Grid>

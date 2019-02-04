@@ -1,13 +1,16 @@
 import React, { Component } from "react";
-import background from "../assets/Books.jpeg";
+import background from "../assets/stars.jpg";
 import { graphql } from "react-apollo";
 import {
   Grid,
   withStyles,
   TextField,
   Button,
-  Typography
+  Typography,
+  InputAdornment,
+  Paper
 } from "@material-ui/core";
+import AccountCircle from "@material-ui/icons/AccountCircle";
 
 // import query from '../gql/queries/CurrentUser';
 // import mutation from '../gql/mutations/Login';
@@ -16,17 +19,18 @@ const image = require("../assets/gatsby.png");
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    background: `linear-gradient(rgba(20,20,20, .99), rgba(20,20,20, .75)),url(${background})`,
-    height: "96vh",
+    //background: `linear-gradient(rgba(10,10,10, .0), rgba(20,20,20, .0)),url(${background})`,
+    background: `url(${background})`,
     backgroundSize: "cover",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    textAlign: "center",
-    color: "white"
+    height: "100vh",
+    width: "100vw",
+    position: "fixed"
   },
   textField: {
-    color: "#000"
+    color: "white !important"
   },
   form: {
     height: "100vh",
@@ -34,31 +38,44 @@ const styles = theme => ({
   },
   title: {
     fontSize: "40px",
-    marginBottom: "10px"
+    marginBottom: "10px",
+    fontWeight: "100"
   },
-  button: {
-    //  margin: theme.spacing.unit
-  },
+  button: { marginTop: "10px" },
   or: { paddingTop: "10px" },
-  multilineColor: {
-    color: "white",
+  paper: {
+    padding: "20px",
+    textAlign: "right",
+    fontWeight: "100",
+    fontSize: "85px"
+  },
+  input: {
+    color: "white !important",
     borderColor: "white"
   },
   cssLabel: {
-    color: `${theme.palette.secondary.main} !important`
+    color: "white"
   },
 
   cssOutlinedInput: {
     "&$cssFocused $notchedOutline": {
-      borderColor: `white !important`
+      borderColor: `${theme.palette.primary.main} !important`,
+      color: "white !important"
     }
   },
-
-  cssFocused: {},
+  multilineColor: {
+    color: "white !important"
+  },
+  input: {
+    color: "white !important"
+  },
+  multilineColor: {
+    color: "white !important"
+  },
 
   notchedOutline: {
     borderWidth: "1px",
-    borderColor: `${theme.palette.secondary.main} !important`
+    borderColor: "white !important"
   }
 });
 
@@ -110,62 +127,15 @@ class SignupForm extends Component {
         >
           <Grid item lg={3} md={3} xs={6}>
             <Typography
-              className={classes.title}
-              color={"secondary"}
-              align={"center"}
-            >
-              Book Notes
-            </Typography>
-
-            <Button
-              variant="outlined"
-              size="large"
-              fullWidth
-              color={"secondary"}
-              className={classes.button}
-              onClick={() => {
-                this.props.history.push(`/login`);
-              }}
-            >
-              Login
-            </Button>
-            <Typography
-              className={classes.or}
+              className={classes.paper}
               variant={"title"}
               align={"center"}
-              color={"secondary"}
+              color={"primary"}
             >
-              or
+              What have you been reading about?
             </Typography>
-            <TextField
-              id="outlined-name"
-              label="Email"
-              fullWidth
-              className={classes.textField}
-              value={this.state.email}
-              InputProps={{
-                classes: {
-                  input: classes.multilineColor
-                }
-              }}
-              InputLabelProps={{
-                classes: {
-                  root: classes.cssLabel,
-                  focused: classes.cssFocused
-                }
-              }}
-              InputProps={{
-                classes: {
-                  root: classes.cssOutlinedInput,
-                  focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline
-                },
-                inputMode: "numeric"
-              }}
-              onChange={this.handleChange("email")}
-              margin="normal"
-              variant="outlined"
-            />
+          </Grid>
+          <Grid item lg={3} md={3} xs={6}>
             <TextField
               id="outlined-name"
               label="Full Name"
@@ -185,13 +155,78 @@ class SignupForm extends Component {
                 classes: {
                   root: classes.cssOutlinedInput,
                   focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline
+                  notchedOutline: classes.notchedOutline,
+                  input: classes.multilineColor
                 },
                 inputMode: "numeric"
               }}
               className={classes.textField}
               value={this.state.fullName}
               onChange={this.handleChange("fullName")}
+              margin="normal"
+              variant="outlined"
+            />
+            <TextField
+              id="outlined-name"
+              label="Email"
+              fullWidth
+              style={{ color: "white !important" }}
+              value={this.state.email}
+              InputProps={{
+                classes: {
+                  input: classes.multilineColor
+                }
+              }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.cssLabel,
+                  focused: classes.cssFocused
+                }
+              }}
+              InputProps={{
+                classes: {
+                  root: classes.cssOutlinedInput,
+                  focused: classes.cssFocused,
+                  notchedOutline: classes.notchedOutline,
+                  input: classes.multilineColor
+                },
+                inputMode: "numeric"
+              }}
+              className={classes.textField}
+              onChange={this.handleChange("email")}
+              margin="normal"
+              variant="outlined"
+            />
+
+            <TextField
+              id="outlined-name"
+              label="Password"
+              fullWidth
+              InputProps={{
+                classes: {
+                  input: classes.multilineColor
+                }
+              }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.cssLabel,
+                  focused: classes.cssFocused
+                }
+              }}
+              InputProps={{
+                classes: {
+                  root: classes.cssOutlinedInput,
+                  focused: classes.cssFocused,
+                  notchedOutline: classes.notchedOutline,
+                  input: classes.multilineColor
+                },
+                inputMode: "numeric"
+              }}
+              type={"password"}
+              className={classes.textField}
+              color={"secondary"}
+              value={this.state.password}
+              onChange={this.handleChange("password")}
               margin="normal"
               variant="outlined"
             />
@@ -214,7 +249,8 @@ class SignupForm extends Component {
                 classes: {
                   root: classes.cssOutlinedInput,
                   focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline
+                  notchedOutline: classes.notchedOutline,
+                  input: classes.multilineColor
                 },
                 inputMode: "numeric"
               }}
@@ -224,46 +260,35 @@ class SignupForm extends Component {
               margin="normal"
               variant="outlined"
             />
-            <TextField
-              id="outlined-name"
-              label="Password"
-              fullWidth
-              InputProps={{
-                classes: {
-                  input: classes.multilineColor
-                }
-              }}
-              InputLabelProps={{
-                classes: {
-                  root: classes.cssLabel,
-                  focused: classes.cssFocused
-                }
-              }}
-              InputProps={{
-                classes: {
-                  root: classes.cssOutlinedInput,
-                  focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline
-                },
-                inputMode: "numeric"
-              }}
-              type={"password"}
-              className={classes.textField}
-              color={"secondary"}
-              value={this.state.password}
-              onChange={this.handleChange("password")}
-              margin="normal"
-              variant="outlined"
-            />
 
             <Button
-              color={"secondary"}
+              color={"primary"}
               variant="outlined"
               size="large"
               fullWidth
               className={classes.button}
             >
               Signup
+            </Button>
+            <Typography
+              className={classes.or}
+              variant={"title"}
+              align={"center"}
+              color={"primary"}
+            >
+              or
+            </Typography>
+            <Button
+              variant="outlined"
+              size="large"
+              fullWidth
+              color={"secondary"}
+              className={classes.button}
+              onClick={() => {
+                this.props.history.push(`/login`);
+              }}
+            >
+              Login
             </Button>
           </Grid>
         </Grid>

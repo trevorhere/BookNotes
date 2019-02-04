@@ -15,7 +15,7 @@ import "./styles/App.css";
 const App = props => {
   return (
     <div>
-      {/* <Nav props={props} /> */}
+      <Nav props={props} />
       {console.log("app", props)}
       <Switch>
         <Route path="/login" component={LoginForm} />

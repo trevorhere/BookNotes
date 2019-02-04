@@ -14,7 +14,8 @@ const styles = {
     flexGrow: 1
   },
   grow: {
-    flexGrow: 1
+    flexGrow: 1,
+    fontWeight: "100"
   },
   menuButton: {
     marginLeft: -12,
@@ -59,7 +60,14 @@ class Nav extends Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
+        <AppBar
+          position="absolute"
+          style={{
+            overflow: "hidden",
+            background: "transparent",
+            boxShadow: "none"
+          }}
+        >
           <Toolbar>
             {/* <IconButton
               className={classes.menuButton}
@@ -73,12 +81,12 @@ class Nav extends Component {
                 this.props.props.history.push(`/`);
               }}
               variant="h6"
-              color="inherit"
+              color="secondary"
               className={classes.grow}
             >
               BookNotes
             </Typography>
-            {this.renderButtons()}
+            {/* {this.renderButtons()} */}
           </Toolbar>
         </AppBar>
         {/* <Navbar brand="retron" right>

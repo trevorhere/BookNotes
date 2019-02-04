@@ -4,6 +4,8 @@ import fetchBook from "../gql/queries/fetchBook";
 import updateBookMutation from "../gql/mutations/UpdateBook";
 import ReactQuill from "react-quill";
 import { Editor } from "react-draft-wysiwyg";
+import Loading from "./Loading";
+
 import {
   EditorState,
   convertToRaw,
@@ -54,8 +56,15 @@ const styles = {
     height: "100%"
   },
 
+  secondaryFab: {
+    margin: 0,
+    top: "auto",
+    right: 120,
+    bottom: 20,
+    left: "auto",
+    position: "fixed"
+  },
   fab: {
-    backgroundColor: "#a9fff7",
     margin: 0,
     top: "auto",
     right: 20,
@@ -182,7 +191,7 @@ class Book extends Component {
           const { book } = data;
 
           if (loading) {
-            return <div>loading...</div>;
+            return <Loading loading={this.props.data.loading} />;
           } else if (error || !book) {
             return <div>error: {error}...</div>;
           }
@@ -258,13 +267,26 @@ class Book extends Component {
               </Fab> */}
                     <Button
                       onClick={() => {
+                        this.props.history.push(`/books`);
+                      }}
+                      color="secondary"
+                      variant="outlined"
+                      size="large"
+                      className={classes.secondaryFab}
+                    >
+                      {/* <Save /> */}
+                      Back
+                    </Button>
+                    <Button
+                      onClick={() => {
                         this.saveChanges(updateBook);
                       }}
+                      color="secondary"
                       variant="contained"
                       size="large"
                       className={classes.fab}
                     >
-                      <Save />
+                      {/* <Save /> */}
                       Save
                     </Button>
                   </div>

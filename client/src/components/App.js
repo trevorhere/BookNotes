@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Route } from "react-router";
 import { Switch } from "react-router-dom";
 import requireAuth from "./requireAuth";
+import { graphql } from "react-apollo";
+import query from "../gql/queries/CurrentUser";
 
 import Nav from "./Nav";
 import Landing from "./Landing";
@@ -16,7 +18,6 @@ const App = props => {
   return (
     <div>
       <Nav props={props} />
-      {console.log("app", props)}
       <Switch>
         <Route path="/login" component={LoginForm} />
         <Route path="/signup" component={SignupForm} />
@@ -40,5 +41,4 @@ const App = props => {
     </div>
   );
 };
-
-export default App;
+export default graphql(query)(App);

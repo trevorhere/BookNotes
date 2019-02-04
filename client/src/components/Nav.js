@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
+
+import query from "../gql/queries/CurrentUser";
+import mutation from "../gql/mutations/Logout";
+
+import { graphql } from "react-apollo";
 
 const styles = {
   root: {
@@ -15,7 +17,7 @@ const styles = {
   },
   grow: {
     flexGrow: 1,
-    fontWeight: "100"
+    fontWeight: "300"
   },
   menuButton: {
     marginLeft: -12,
@@ -28,32 +30,28 @@ class Nav extends Component {
     super(props);
   }
 
+  onLogoutClick(event) {
+    event.preventDefault();
+    this.props.mutate({
+      refetchQueries: [{ query }]
+    });
+  }
+
   renderButtons() {
-    let user = false;
+    const { loading, user } = this.props.data;
+    if (loading) {
+      return <div />;
+    }
 
     if (user) {
-      return <Button color="inherit">Home</Button>;
+      return (
+        <div>
+          <Button onClick={this.onLogoutClick.bind(this)} color="secondary">
+            LOGOUT
+          </Button>
+        </div>
+      );
     }
-    return (
-      <div>
-        <Button
-          color="inherit"
-          onClick={() => {
-            this.props.props.history.push(`/signup`);
-          }}
-        >
-          Signup
-        </Button>
-        <Button
-          onClick={() => {
-            this.props.props.history.push(`/login`);
-          }}
-          color="inherit"
-        >
-          Login
-        </Button>
-      </div>
-    );
   }
   render() {
     const { classes } = this.props;
@@ -78,7 +76,7 @@ class Nav extends Component {
             </IconButton> */}
             <Typography
               onClick={() => {
-                this.props.props.history.push(`/`);
+                this.props.props.history.push(`/books`);
               }}
               variant="h6"
               color="secondary"
@@ -86,7 +84,7 @@ class Nav extends Component {
             >
               BookNotes
             </Typography>
-            {/* {this.renderButtons()} */}
+            {this.renderButtons()}
           </Toolbar>
         </AppBar>
         {/* <Navbar brand="retron" right>
@@ -98,4 +96,6 @@ class Nav extends Component {
   }
 }
 
-export default withStyles(styles)(Nav);
+// export default withStyles(styles)(Nav);
+
+export default graphql(mutation)(graphql(query)(withStyles(styles)(Nav)));

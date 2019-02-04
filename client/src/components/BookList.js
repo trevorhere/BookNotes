@@ -3,6 +3,8 @@ import { graphql, compose, Mutation, Query } from "react-apollo";
 import { Redirect } from "react-router-dom";
 import fetchUser from "../gql/queries/CurrentUser";
 import createBookMutation from "../gql/mutations/CreateBook";
+import Loading from "./Loading";
+
 import {
   Card,
   CardActionArea,
@@ -18,20 +20,30 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField
+  TextField,
+  Grid,
+  Divider
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
+
+import background from "../assets/city.jpeg";
 
 const moment = require("moment");
 const blank = require("../assets/blankBook.png");
 const styles = {
   card: {
-    maxWidth: 300,
+    height: 300,
+    width: 200,
     margin: 5
+    // background: `linear-gradient(rgba(20,20,20, .75), rgba(20,20,20, .75)),url(${background})`
+  },
+  darkButton: {
+    margin: 10
   },
   media: {
-    height: 300,
-    width: 250
+    minHeight: 300,
+    minWidth: 100,
+    backgroundSize: "cover"
   },
   root: {
     display: "flex",
@@ -39,8 +51,7 @@ const styles = {
     alignSelf: "center",
     justifyContent: "start",
     overflow: "hidden",
-    marginTop: 100,
-    marginLeft: 40
+    marginTop: 100
     // backgroundColor: theme.palette.background.paper
   },
   check: {
@@ -59,7 +70,22 @@ const styles = {
     left: "auto",
     position: "fixed"
   },
-  darkButton: {}
+  Grid: {
+    justifyContent: "center",
+    border: "1px solid red"
+    // borderWidth: "50%"
+  },
+  title: {
+    display: "flex",
+    justifyContent: "center",
+    alignSelf: "center",
+    fontSize: "40px",
+    margin: "10px",
+    color: "white",
+    fontWeight: "100",
+    marginTop: "30vh",
+    width: "100%"
+  }
 };
 
 class BookList extends Component {
@@ -106,53 +132,58 @@ class BookList extends Component {
 
     if (!books.length) {
       return (
-        <Card className={classes.card}>
-          <CardActionArea>
-            <CardMedia
-              className={classes.media}
-              image={blank}
-              title={"Add book"}
-            />
-            <CardContent>
-              <Typography gutterBottom variant="h5" component="h2">
-                No Books Yet
-              </Typography>
-              <Typography component="p" />
-            </CardContent>
-          </CardActionArea>
-        </Card>
+        <Typography className={classes.title}>No Books Added Yet</Typography>
+        // <Card className={classes.card}>
+        //   <CardActionArea>
+        //     <CardMedia
+        //       className={classes.media}
+        //       image={blank}
+        //       title={"Add book"}
+        //     />
+        //     <CardContent>
+        //       <Typography gutterBottom variant="h5" component="h2">
+        //         No Books Yet
+        //       </Typography>
+        //       <Typography component="p" />
+        //     </CardContent>
+        //   </CardActionArea>
+        // </Card>
       );
     } else {
       return books.map(book => {
         return (
-          <Card className={classes.card}>
-            <CardActionArea>
+          <Card key={book.title} className={classes.card}>
+            <CardActionArea
+              onClick={() => {
+                this.props.history.push(`/books/${book.id}`);
+              }}
+            >
               <CardMedia
                 className={classes.media}
                 image={book.imageUrl}
                 title={book.title}
               />
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="h2">
+              {/* <CardContent>
+                <Typography gutterBottom variant="h6" component="h2">
                   {book.title}
                 </Typography>
-                <Typography component="p">{book.title}</Typography>
-              </CardContent>
+                <Typography component="p">{book.author}</Typography>
+              </CardContent> */}
             </CardActionArea>
-            <CardActions>
+            {/* <CardActions>
               <Button
-                size="small"
+                size="large"
                 fullWidth
-                variant="outline"
+                variant="contained"
                 className={classes.darkButton}
                 onClick={() => {
                   this.props.history.push(`/books/${book.id}`);
                 }}
-                color="primary"
               >
                 View
               </Button>
-            </CardActions>
+              <br />
+            </CardActions> */}
           </Card>
         );
       });
@@ -245,15 +276,21 @@ class BookList extends Component {
           const { user } = data;
 
           if (loading) {
-            return <div>loading...</div>;
+            return <Loading loading={this.props.data.loading} />;
           } else if (error || !user) {
             return <div>error: {error}...</div>;
           }
 
           return (
             <div className={classes.root}>
+              <br />
+              <br />
+              <Grid container className={classes.Grid} spacing={24}>
+                {/* <Typography className={classes.title}>Your Books</Typography> */}
+
+                {this.renderBookCard(user.books)}
+              </Grid>
               {this.renderDialogue()}
-              {this.renderBookCard(user.books)}
               <Fab
                 color="secondary"
                 aria-label="Add"

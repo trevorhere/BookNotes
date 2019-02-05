@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { graphql } from "react-apollo";
+import query from "../gql/queries/CurrentUser";
+import mutation from "../gql/mutations/Signup";
 import background from "../assets/stars.jpg";
-import { graphql, Mutation } from "react-apollo";
 import {
   Grid,
   withStyles,
@@ -8,8 +10,6 @@ import {
   Button,
   Typography
 } from "@material-ui/core";
-import currentUserQuery from "../gql/queries/CurrentUser";
-import signupMutation from "../gql/mutations/Signup";
 
 const styles = theme => ({
   root: {
@@ -86,80 +86,49 @@ class SignupForm extends Component {
     };
   }
 
-  onSubmit = (event, signup) => {
+  componentWillUpdate(nextProps) {
+    if (!this.props.data.user && nextProps.data.user) {
+      this.props.history.push("/books");
+    }
+  }
+
+  onSubmit(event) {
     event.preventDefault();
-
-    const { email, password, fullName, userName } = this.state;
-
-    signup({
-      variables: { email, password, fullName, userName },
-      refetchQueries: [{ currentUserQuery }]
+    const { email, password, name, position, phoneNumber } = this.state;
+    this.props.mutate({
+      variables: { email, password, name, position, phoneNumber },
+      refetchQueries: [{ query }]
     });
 
-    this.props.history.push(`/books`);
-  };
-
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
-  };
+    this.props.history.push("/books");
+  }
 
   render() {
     const { classes } = this.props;
+
     return (
-      <Mutation mutation={signupMutation} onError={this.onError}>
-        {signup => {
-          return (
-            <div className={classes.root}>
-              <Grid
-                className={classes.form}
-                container
-                justify={"center"}
-                alignContent={"center"}
-                spacing={24}
-              >
-                <Grid item lg={3} md={3} xs={6}>
-                  <Typography
-                    className={classes.paper}
-                    variant={"title"}
-                    align={"center"}
-                    color={"primary"}
-                  >
-                    What have you been reading about?
-                  </Typography>
-                </Grid>
-                <Grid item lg={3} md={3} xs={6}>
-                  <TextField
-                    id="outlined-name"
-                    label="Full Name"
-                    fullWidth
-                    InputProps={{
-                      classes: {
-                        input: classes.multilineColor
-                      }
-                    }}
-                    InputLabelProps={{
-                      classes: {
-                        root: classes.cssLabel,
-                        focused: classes.cssFocused
-                      }
-                    }}
-                    InputProps={{
-                      classes: {
-                        root: classes.cssOutlinedInput,
-                        focused: classes.cssFocused,
-                        notchedOutline: classes.notchedOutline,
-                        input: classes.multilineColor
-                      },
-                      inputMode: "numeric"
-                    }}
-                    className={classes.textField}
-                    value={this.state.fullName}
-                    onChange={this.handleChange("fullName")}
-                    margin="normal"
-                    variant="outlined"
-                  />
+      <div className={classes.root}>
+        <Grid
+          className={classes.form}
+          container
+          justify={"center"}
+          alignContent={"center"}
+          spacing={24}
+        >
+          <Grid item lg={3} md={3} xs={6}>
+            <Typography
+              className={classes.paper}
+              variant={"title"}
+              align={"center"}
+              color={"primary"}
+            >
+              What have you been reading about?
+            </Typography>
+          </Grid>
+          <Grid item lg={3} md={3} xs={6}>
+            <div style={{ color: "#9D9C9D" }} className="container">
+              <form onSubmit={this.onSubmit.bind(this)} className="col s6">
+                <div className="input-field">
                   <TextField
                     id="outlined-name"
                     label="Email"
@@ -187,11 +156,51 @@ class SignupForm extends Component {
                       inputMode: "numeric"
                     }}
                     className={classes.textField}
-                    onChange={this.handleChange("email")}
+                    onChange={e =>
+                      this.setState({
+                        email: e.target.value
+                      })
+                    }
                     margin="normal"
                     variant="outlined"
                   />
 
+                  <TextField
+                    id="outlined-name"
+                    label="Full Name"
+                    fullWidth
+                    InputProps={{
+                      classes: {
+                        input: classes.multilineColor
+                      }
+                    }}
+                    InputLabelProps={{
+                      classes: {
+                        root: classes.cssLabel,
+                        focused: classes.cssFocused
+                      }
+                    }}
+                    InputProps={{
+                      classes: {
+                        root: classes.cssOutlinedInput,
+                        focused: classes.cssFocused,
+                        notchedOutline: classes.notchedOutline,
+                        input: classes.multilineColor
+                      },
+                      inputMode: "numeric"
+                    }}
+                    className={classes.textField}
+                    value={this.state.fullName}
+                    onChange={e =>
+                      this.setState({
+                        fullName: e.target.value
+                      })
+                    }
+                    margin="normal"
+                    variant="outlined"
+                  />
+                </div>
+                <div className="input-field">
                   <TextField
                     id="outlined-name"
                     label="Password"
@@ -220,7 +229,11 @@ class SignupForm extends Component {
                     className={classes.textField}
                     color={"secondary"}
                     value={this.state.password}
-                    onChange={this.handleChange("password")}
+                    onChange={e =>
+                      this.setState({
+                        password: e.target.value
+                      })
+                    }
                     margin="normal"
                     variant="outlined"
                   />
@@ -250,52 +263,54 @@ class SignupForm extends Component {
                     }}
                     className={classes.textField}
                     value={this.state.userName}
-                    onChange={this.handleChange("userName")}
+                    onChange={e =>
+                      this.setState({
+                        userName: e.target.value
+                      })
+                    }
                     margin="normal"
                     variant="outlined"
                   />
-
-                  <Button
-                    color={"primary"}
-                    variant="outlined"
-                    size="large"
-                    fullWidth
-                    className={classes.button}
-                    onClick={event => {
-                      this.onSubmit(event, signup);
-                    }}
-                  >
-                    Signup
-                  </Button>
-                  <Typography
-                    className={classes.or}
-                    variant={"title"}
-                    align={"center"}
-                    color={"primary"}
-                  >
-                    or
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    fullWidth
-                    color={"secondary"}
-                    className={classes.button}
-                    onClick={() => {
-                      this.props.history.push(`/login`);
-                    }}
-                  >
-                    Login
-                  </Button>
-                </Grid>
-              </Grid>
+                </div>
+                <Button
+                  color={"primary"}
+                  variant="outlined"
+                  size="large"
+                  fullWidth
+                  className={classes.button}
+                  type="submit"
+                >
+                  Signup
+                </Button>
+                <Typography
+                  className={classes.or}
+                  variant={"title"}
+                  align={"center"}
+                  color={"primary"}
+                >
+                  or
+                </Typography>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  fullWidth
+                  color={"secondary"}
+                  className={classes.button}
+                  onClick={() => {
+                    this.props.history.push(`/login`);
+                  }}
+                >
+                  Login
+                </Button>
+              </form>
             </div>
-          );
-        }}
-      </Mutation>
+          </Grid>
+        </Grid>
+      </div>
     );
   }
 }
-//export default withStyles(styles)(SignupForm);
 
-export default graphql(signupMutation)(withStyles(styles)(SignupForm));
+export default graphql(query)(
+  graphql(mutation)(withStyles(styles)(SignupForm))
+);

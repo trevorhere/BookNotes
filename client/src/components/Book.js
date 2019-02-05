@@ -86,7 +86,7 @@ class Book extends Component {
       json: "",
       data: {},
       loaded: false
-    }; // You can also pass a Quill Delta here
+    };
     this.handleChange = this.handleChange.bind(this);
   }
 
@@ -104,7 +104,6 @@ class Book extends Component {
     console.log(
       JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()))
     );
-    console.log("json", this.state.json);
   }
 
   saveChanges = updateBook => {
@@ -113,7 +112,6 @@ class Book extends Component {
     let notes = JSON.stringify(
       convertToRaw(this.state.editorState.getCurrentContent())
     );
-    console.log(imageUrl);
 
     updateBook({
       variables: { bookID, imageUrl, title, author, notes }
@@ -135,8 +133,6 @@ class Book extends Component {
   };
 
   initializeEditorText(notes) {
-    console.log("propssss", notes);
-
     if (notes) {
       this.setState({
         editorState: EditorState.createWithContent(
@@ -149,7 +145,6 @@ class Book extends Component {
   render() {
     const { classes, match } = this.props;
     const { editorState } = this.state;
-    console.log("props", this.props);
 
     return (
       <Query
@@ -165,7 +160,6 @@ class Book extends Component {
 
           if (data.book.notes) {
             let { title, author, imageUrl } = data.book;
-            console.log("imageURl FE", imageUrl);
             this.setState({
               editorState: EditorState.createWithContent(
                 convertFromRaw(JSON.parse(data.book.notes))
@@ -177,7 +171,6 @@ class Book extends Component {
             });
           } else {
             let { title, author, imageUrl } = data.book;
-            console.log("imageURl FE", imageUrl);
             this.setState({
               title,
               author,
@@ -206,7 +199,7 @@ class Book extends Component {
                         className={classes.innerGrid}
                         item
                         lg={2}
-                        md={2}
+                        md={1}
                         xs={12}
                       >
                         <Card className={classes.card}>
@@ -228,7 +221,7 @@ class Book extends Component {
                                 {book.author}
                               </Typography>
                               <Typography component="p">
-                                {book.createdAt}
+                                Added: {book.createdAt}
                               </Typography>
                             </CardContent>
                           </CardActionArea>
@@ -238,15 +231,10 @@ class Book extends Component {
                         className={classes.innerGrid}
                         item
                         lg={4}
-                        md={4}
+                        md={11}
                         xs={12}
                       >
                         <Paper className={classes.paper}>
-                          {/* <ReactQuill
-                      className={classes.quill}
-                      value={this.state.text}
-                      onChange={this.handleChange}
-                    /> */}
                           <Editor
                             editorState={editorState}
                             toolbarClassName="toolbarClassName"
@@ -257,14 +245,6 @@ class Book extends Component {
                         </Paper>
                       </Grid>
                     </Grid>
-                    {/* <Fab
-                color="primary"
-                aria-label="Add"
-                onClick={this.handleClickOpen}
-                className={classes.fab}
-              >
-                <Add />
-              </Fab> */}
                     <Button
                       onClick={() => {
                         this.props.history.push(`/books`);
@@ -274,7 +254,6 @@ class Book extends Component {
                       size="large"
                       className={classes.secondaryFab}
                     >
-                      {/* <Save /> */}
                       Back
                     </Button>
                     <Button
@@ -286,7 +265,6 @@ class Book extends Component {
                       size="large"
                       className={classes.fab}
                     >
-                      {/* <Save /> */}
                       Save
                     </Button>
                   </div>

@@ -82,7 +82,7 @@ class Nav extends Component {
               color="secondary"
               className={classes.grow}
             >
-              BookNotes
+              BookThinks
             </Typography>
             {this.renderButtons()}
           </Toolbar>

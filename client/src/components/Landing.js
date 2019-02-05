@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import background from "../assets/city.jpeg";
+import background from "../assets/stars.jpg";
 import { BarLoader } from "react-spinners";
 import { Col, Row, Preloader } from "react-materialize";
 

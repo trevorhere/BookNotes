@@ -26,8 +26,6 @@ import {
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
-import background from "../assets/city.jpeg";
-
 const moment = require("moment");
 const blank = require("../assets/blankBook.png");
 const styles = {

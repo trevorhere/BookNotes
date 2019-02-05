@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { graphql, compose, Mutation, Query } from "react-apollo";
-import { Redirect } from "react-router-dom";
 import fetchUser from "../gql/queries/CurrentUser";
 import createBookMutation from "../gql/mutations/CreateBook";
 import Loading from "./Loading";
@@ -27,13 +26,11 @@ import {
 import AddIcon from "@material-ui/icons/Add";
 
 const moment = require("moment");
-const blank = require("../assets/blankBook.png");
 const styles = {
   card: {
     height: 300,
     width: 200,
     margin: 5
-    // background: `linear-gradient(rgba(20,20,20, .75), rgba(20,20,20, .75)),url(${background})`
   },
   darkButton: {
     margin: 10
@@ -50,7 +47,6 @@ const styles = {
     justifyContent: "start",
     overflow: "hidden",
     marginTop: 100
-    // backgroundColor: theme.palette.background.paper
   },
   check: {
     width: "80vw"
@@ -58,9 +54,6 @@ const styles = {
 
   fab: {
     backgroundColor: "primary",
-    // position: "absolute",
-    // bottom: 40,
-    // right: 40,
     margin: 0,
     top: "auto",
     right: 20,
@@ -71,7 +64,6 @@ const styles = {
   Grid: {
     justifyContent: "center",
     border: "1px solid red"
-    // borderWidth: "50%"
   },
   title: {
     display: "flex",
@@ -111,11 +103,6 @@ class BookList extends Component {
     let createdAt = moment().format("MM/DD/YY");
     let userID = this.props.data.user.id;
 
-    // createdAt = this.props.mutate({
-    //   variables: { userID, imageUrl, title, author, createdAt },
-    //   refetchQueries: [{ fetchUser }]
-    // });
-
     addBook({
       variables: { userID, imageUrl, title, author, createdAt },
       refetchQueries: [{ fetchUser }]
@@ -131,21 +118,6 @@ class BookList extends Component {
     if (!books.length) {
       return (
         <Typography className={classes.title}>No Books Added Yet</Typography>
-        // <Card className={classes.card}>
-        //   <CardActionArea>
-        //     <CardMedia
-        //       className={classes.media}
-        //       image={blank}
-        //       title={"Add book"}
-        //     />
-        //     <CardContent>
-        //       <Typography gutterBottom variant="h5" component="h2">
-        //         No Books Yet
-        //       </Typography>
-        //       <Typography component="p" />
-        //     </CardContent>
-        //   </CardActionArea>
-        // </Card>
       );
     } else {
       return books.map(book => {
@@ -284,8 +256,6 @@ class BookList extends Component {
               <br />
               <br />
               <Grid container className={classes.Grid} spacing={24}>
-                {/* <Typography className={classes.title}>Your Books</Typography> */}
-
                 {this.renderBookCard(user.books)}
               </Grid>
               {this.renderDialogue()}

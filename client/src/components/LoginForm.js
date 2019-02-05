@@ -20,24 +20,24 @@ const styles = theme => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: "100vh",
+    minHeight: "100vh",
     width: "100vw",
-    position: "fixed"
+    overflow: "hidden"
   },
   textField: {
     color: "#000"
   },
   form: {
-    height: "100vh",
+    minHeight: "100vh",
     alignItems: "center"
   },
   title: {
-    fontSize: "40px",
+    fontSize: "30px",
+    marginTop: "60px",
     marginBottom: "10px",
-    color: "white",
     fontWeight: "100"
   },
-
+  button: { marginTop: "10px", marginBottom: "10px" },
   or: { paddingTop: "10px" },
   input: {
     color: "white !important",
@@ -113,7 +113,7 @@ class LoginForm extends Component {
           alignContent={"center"}
           spacing={24}
         >
-          <Grid item lg={3} md={3} xs={6}>
+          <Grid item lg={3} md={3} xs={0}>
             <Typography
               className={classes.paper}
               variant={"title"}
@@ -123,111 +123,109 @@ class LoginForm extends Component {
               What have you been reading about?
             </Typography>
           </Grid>
-          <Grid item lg={3} md={3} xs={6}>
-            <div style={{ color: "#9D9C9D" }} className="container">
-              <form onSubmit={this.onSubmit.bind(this)} className="col s6">
-                <TextField
-                  label={`Email`}
-                  fullWidth
-                  style={{ color: "white !important" }}
-                  value={this.state.email}
-                  InputProps={{
-                    classes: {
-                      input: classes.multilineColor
-                    }
-                  }}
-                  InputLabelProps={{
-                    classes: {
-                      root: classes.cssLabel,
-                      focused: classes.cssFocused
-                    }
-                  }}
-                  InputProps={{
-                    classes: {
-                      root: classes.cssOutlinedInput,
-                      focused: classes.cssFocused,
-                      notchedOutline: classes.notchedOutline,
-                      input: classes.multilineColor
-                    },
-                    inputMode: "numeric"
-                  }}
-                  className={classes.textField}
-                  onChange={e =>
-                    this.setState({
-                      email: e.target.value
-                    })
+          <Grid item lg={3} md={3} xs={11}>
+            <form onSubmit={this.onSubmit.bind(this)} className="col s6">
+              <TextField
+                label={`Email`}
+                fullWidth
+                style={{ color: "white !important" }}
+                value={this.state.email}
+                InputProps={{
+                  classes: {
+                    input: classes.multilineColor
                   }
-                  margin="normal"
-                  variant="outlined"
-                />
-                <TextField
-                  label="Password"
-                  fullWidth
-                  InputProps={{
-                    classes: {
-                      input: classes.multilineColor
-                    }
-                  }}
-                  InputLabelProps={{
-                    classes: {
-                      root: classes.cssLabel,
-                      focused: classes.cssFocused
-                    }
-                  }}
-                  InputProps={{
-                    classes: {
-                      root: classes.cssOutlinedInput,
-                      focused: classes.cssFocused,
-                      notchedOutline: classes.notchedOutline,
-                      input: classes.multilineColor
-                    },
-                    inputMode: "numeric"
-                  }}
-                  type={"password"}
-                  className={classes.textField}
-                  color={"secondary"}
-                  value={this.state.password}
-                  onChange={e =>
-                    this.setState({
-                      password: e.target.value
-                    })
+                }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.cssLabel,
+                    focused: classes.cssFocused
                   }
-                  margin="normal"
-                  variant="outlined"
-                />
-                <Button
-                  variant="outlined"
-                  size="large"
-                  fullWidth
-                  color={"primary"}
-                  className={classes.button}
-                  type="submit"
-                  value="submit"
-                >
-                  Login
-                </Button>
-                <Typography
-                  className={classes.or}
-                  variant={"title"}
-                  align={"center"}
-                  color={"primary"}
-                >
-                  or
-                </Typography>
-                <Button
-                  color={"secondary"}
-                  variant="outlined"
-                  size="large"
-                  fullWidth
-                  className={classes.button}
-                  onClick={() => {
-                    this.props.history.push(`/signup`);
-                  }}
-                >
-                  Signup
-                </Button>
-              </form>
-            </div>
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.cssOutlinedInput,
+                    focused: classes.cssFocused,
+                    notchedOutline: classes.notchedOutline,
+                    input: classes.multilineColor
+                  },
+                  inputMode: "numeric"
+                }}
+                className={classes.textField}
+                onChange={e =>
+                  this.setState({
+                    email: e.target.value
+                  })
+                }
+                margin="normal"
+                variant="outlined"
+              />
+              <TextField
+                label="Password"
+                fullWidth
+                InputProps={{
+                  classes: {
+                    input: classes.multilineColor
+                  }
+                }}
+                InputLabelProps={{
+                  classes: {
+                    root: classes.cssLabel,
+                    focused: classes.cssFocused
+                  }
+                }}
+                InputProps={{
+                  classes: {
+                    root: classes.cssOutlinedInput,
+                    focused: classes.cssFocused,
+                    notchedOutline: classes.notchedOutline,
+                    input: classes.multilineColor
+                  },
+                  inputMode: "numeric"
+                }}
+                type={"password"}
+                className={classes.textField}
+                color={"secondary"}
+                value={this.state.password}
+                onChange={e =>
+                  this.setState({
+                    password: e.target.value
+                  })
+                }
+                margin="normal"
+                variant="outlined"
+              />
+              <Button
+                variant="outlined"
+                size="large"
+                fullWidth
+                color={"primary"}
+                className={classes.button}
+                type="submit"
+                value="submit"
+              >
+                Login
+              </Button>
+              <Typography
+                className={classes.or}
+                variant={"title"}
+                align={"center"}
+                color={"primary"}
+              >
+                or
+              </Typography>
+              <Button
+                color={"secondary"}
+                variant="outlined"
+                size="large"
+                fullWidth
+                className={classes.button}
+                onClick={() => {
+                  this.props.history.push(`/signup`);
+                }}
+              >
+                Signup
+              </Button>
+            </form>
           </Grid>
         </Grid>
       </div>

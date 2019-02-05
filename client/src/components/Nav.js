@@ -67,13 +67,6 @@ class Nav extends Component {
           }}
         >
           <Toolbar>
-            {/* <IconButton
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="Menu"
-            >
-              <MenuIcon />
-            </IconButton> */}
             <Typography
               onClick={() => {
                 this.props.props.history.push(`/books`);
@@ -87,15 +80,9 @@ class Nav extends Component {
             {this.renderButtons()}
           </Toolbar>
         </AppBar>
-        {/* <Navbar brand="retron" right>
-        {console.log("nav", this.props)}
-        {this.renderButtons()}
-      </Navbar> */}
       </div>
     );
   }
 }
-
-// export default withStyles(styles)(Nav);
 
 export default graphql(mutation)(graphql(query)(withStyles(styles)(Nav)));

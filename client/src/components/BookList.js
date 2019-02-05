@@ -7,8 +7,6 @@ import Loading from "./Loading";
 import {
   Card,
   CardActionArea,
-  CardActions,
-  CardContent,
   CardMedia,
   Button,
   Typography,
@@ -20,8 +18,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  Grid,
-  Divider
+  Grid
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 

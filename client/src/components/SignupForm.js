@@ -14,7 +14,6 @@ import {
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    //background: `linear-gradient(rgba(10,10,10, .0), rgba(20,20,20, .0)),url(${background})`,
     background: `url(${background})`,
     backgroundSize: "cover",
     display: "flex",

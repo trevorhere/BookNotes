@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { graphql, compose, Mutation, Query } from "react-apollo";
 import fetchBook from "../gql/queries/fetchBook";
 import updateBookMutation from "../gql/mutations/UpdateBook";
-import ReactQuill from "react-quill";
 import { Editor } from "react-draft-wysiwyg";
 import Loading from "./Loading";
 
@@ -17,15 +16,12 @@ import {
   Grid,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Button,
   Paper,
   Typography,
-  withStyles,
-  Fab,
-  TextField
+  withStyles
 } from "@material-ui/core";
 import { Add, Save } from "@material-ui/icons";
 

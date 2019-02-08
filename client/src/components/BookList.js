@@ -19,9 +19,7 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  Grid,
-  Snackbar,
-  Fade
+  Grid
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -94,6 +92,9 @@ class BookList extends Component {
 
   handleClickOpen = () => {
     this.setState({ open: true });
+  };
+  handleClose = () => {
+    this.setState({ open: false });
   };
 
   snackOpen = () => {

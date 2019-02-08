@@ -22,7 +22,7 @@ const App = props => {
         <Route path="/signup" component={SignupForm} />
         <Route path="/books/:bookID" component={requireAuth(Book)} />
         <Route path="/books" component={requireAuth(BookList)} />
-        <Route path="/" component={SignupForm} />
+        <Route path="/" component={LoginForm} />
       </Switch>
     </div>
   );

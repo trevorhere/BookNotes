@@ -38,6 +38,11 @@ const styles = theme => ({
     fontWeight: "100"
   },
   button: { marginTop: "10px", marginBottom: "10px" },
+  taButton: {
+    marginTop: "10px",
+    marginBottom: "10px",
+    color: "#DF2588 !important"
+  },
   or: { paddingTop: "10px" },
   input: {
     color: "white !important",
@@ -80,8 +85,8 @@ class LoginForm extends Component {
     super(props);
 
     this.state = {
-      email: "",
-      password: ""
+      email: "example@email.com",
+      password: "example"
     };
   }
   componentWillUpdate(nextProps) {
@@ -125,6 +130,17 @@ class LoginForm extends Component {
           </Grid>
           <Grid item lg={3} md={3} xs={11}>
             <form onSubmit={this.onSubmit.bind(this)} className="col s6">
+              <Button
+                variant="outlined"
+                size="large"
+                fullWidth
+                color={"secondary"}
+                className={classes.taButton}
+                type="submit"
+                value="submit"
+              >
+                CS 356 TA CLICK HERE
+              </Button>
               <TextField
                 label={`Email`}
                 fullWidth

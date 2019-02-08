@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import { graphql, compose, Mutation, Query } from "react-apollo";
 import fetchBook from "../gql/queries/fetchBook";
 import updateBookMutation from "../gql/mutations/UpdateBook";
+import deleteBookMutation from "../gql/mutations/DeleteBook";
+import fetchUser from "../gql/queries/CurrentUser";
+
 import { Editor } from "react-draft-wysiwyg";
 import Loading from "./Loading";
 
-import {
-  EditorState,
-  convertToRaw,
-  convertFromRaw,
-  createWithContent
-} from "draft-js";
+import { EditorState, convertToRaw, convertFromRaw } from "draft-js";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import {
   Grid,
@@ -21,9 +19,17 @@ import {
   Button,
   Paper,
   Typography,
-  withStyles
+  withStyles,
+  Fab,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
+  Fade
 } from "@material-ui/core";
-import { Add, Save } from "@material-ui/icons";
+import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
 
 const styles = {
   root: {
@@ -31,7 +37,8 @@ const styles = {
     display: "flex",
     flexGrow: 1,
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    marginTop: 100
   },
   card: {
     width: 250,
@@ -46,12 +53,22 @@ const styles = {
   },
   paper: {
     minHeight: "100%",
-    padding: 10
+    padding: 10,
+    marginBottom: 100
   },
   quill: {
     height: "100%"
   },
-
+  tertiaryFab: {
+    margin: 0,
+    backgroundColor: "#F34539",
+    color: "#fff",
+    top: "auto",
+    right: "auto",
+    bottom: 20,
+    left: 20,
+    position: "fixed"
+  },
   secondaryFab: {
     margin: 0,
     top: "auto",
@@ -81,7 +98,9 @@ class Book extends Component {
       editorState: EditorState.createEmpty(),
       json: "",
       data: {},
-      loaded: false
+      loaded: false,
+      open: false,
+      snack: false
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -96,6 +115,33 @@ class Book extends Component {
     this.setState({ text: value });
   }
 
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+  dialogueSubmit = deleteBook => {
+    const { bookID } = this.props.match.params;
+
+    deleteBook({
+      variables: { bookID },
+      refetchQueries: [{ fetchUser }]
+    });
+
+    this.props.data.refetch();
+    this.handleClose();
+    this.props.history.push(`/books`);
+  };
+  snackOpen = () => {
+    this.setState({ snack: true });
+  };
+
+  snackClose = () => {
+    this.setState({ snack: false });
+  };
   showText() {
     console.log(
       JSON.stringify(convertToRaw(this.state.editorState.getCurrentContent()))
@@ -112,6 +158,8 @@ class Book extends Component {
     updateBook({
       variables: { bookID, imageUrl, title, author, notes }
     });
+
+    this.snackOpen();
   };
 
   testSetText() {
@@ -122,12 +170,6 @@ class Book extends Component {
     });
   }
 
-  handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value
-    });
-  };
-
   initializeEditorText(notes) {
     if (notes) {
       this.setState({
@@ -136,6 +178,47 @@ class Book extends Component {
         )
       });
     }
+  }
+
+  renderDialogue(refetch) {
+    return (
+      <Mutation
+        mutation={deleteBookMutation}
+        onCompleted={() => {
+          this.props.history.push(`/books`);
+        }}
+        onError={this.onError}
+      >
+        {deleteBook => {
+          return (
+            <Dialog
+              open={this.state.open}
+              onClose={this.handleClose}
+              aria-labelledby="form-dialog-title"
+            >
+              <DialogTitle id="form-dialog-title">Remove Book?</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  All data associated with this book, including notes, will be
+                  deleted.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={this.handleClose}>Cancel</Button>
+                <Button
+                  onClick={() => {
+                    this.dialogueSubmit(deleteBook);
+                  }}
+                  color="secondary"
+                >
+                  Delete
+                </Button>
+              </DialogActions>
+            </Dialog>
+          );
+        }}
+      </Mutation>
+    );
   }
 
   render() {
@@ -149,7 +232,6 @@ class Book extends Component {
         fetchPolicy="cache-and-network"
         variables={{ bookID: this.props.match.params.bookID }}
         onCompleted={data => {
-          console.log("data", data);
           if (this.state.loaded) {
             return;
           }
@@ -176,7 +258,7 @@ class Book extends Component {
           }
         }}
       >
-        {({ loading, error, data }) => {
+        {({ loading, error, data, refetch }) => {
           const { book } = data;
 
           if (loading) {
@@ -239,8 +321,25 @@ class Book extends Component {
                             onEditorStateChange={this.onEditorStateChange}
                           />
                         </Paper>
+                        {this.renderDialogue(refetch)}
+                        <Snackbar
+                          open={this.state.snack}
+                          onClose={this.snackClose}
+                          TransitionComponent={Fade}
+                          ContentProps={{
+                            "aria-describedby": "message-id"
+                          }}
+                          message={<span id="message-id">Text Saved</span>}
+                        />
                       </Grid>
                     </Grid>
+                    <Fab
+                      onClick={this.handleClickOpen}
+                      size="large"
+                      className={classes.tertiaryFab}
+                    >
+                      <DeleteForeverIcon />
+                    </Fab>
                     <Button
                       onClick={() => {
                         this.props.history.push(`/books`);

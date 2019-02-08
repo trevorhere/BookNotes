@@ -72,7 +72,7 @@ class Nav extends Component {
                 this.props.props.history.push(`/books`);
               }}
               variant="h6"
-              color="secondary"
+              color="primary"
               className={classes.grow}
             >
               BookThinks

@@ -81,6 +81,15 @@ const mutation = new GraphQLObjectType({
         return Book.addBook(userID, imageUrl, title, author, createdAt);
       }
     },
+    deleteBook: {
+      type: BookType,
+      args: {
+        bookID: { type: GraphQLID }
+      },
+      resolve(parentValue, { bookID }) {
+        return Book.deleteBook(bookID);
+      }
+    },
     updateBook: {
       type: BookType,
       args: {

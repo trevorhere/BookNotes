@@ -3,6 +3,7 @@ import { graphql, compose, Mutation, Query } from "react-apollo";
 import fetchUser from "../gql/queries/CurrentUser";
 import createBookMutation from "../gql/mutations/CreateBook";
 import Loading from "./Loading";
+import defaultBookCover from "../assets/noBookCover.png";
 
 import {
   Card,
@@ -18,7 +19,9 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  Grid
+  Grid,
+  Snackbar,
+  Fade
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
@@ -35,7 +38,8 @@ const styles = {
   media: {
     minHeight: 300,
     minWidth: 100,
-    backgroundSize: "cover"
+    backgroundSize: "cover",
+    backgroundColor: "#000"
   },
   root: {
     display: "flex",
@@ -83,7 +87,8 @@ class BookList extends Component {
       open: false,
       imageUrl: "",
       title: "",
-      author: ""
+      author: "",
+      snack: false
     };
   }
 
@@ -91,8 +96,18 @@ class BookList extends Component {
     this.setState({ open: true });
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  snackOpen = () => {
+    this.setState({ snack: true });
+  };
+
+  snackTimedClose = () => {
+    setTimeout(() => {
+      return this.snackClose();
+    }, 5000);
+  };
+
+  snackClose = () => {
+    this.setState({ close: false });
   };
 
   dialogueSubmit = addBook => {
@@ -118,8 +133,15 @@ class BookList extends Component {
       );
     } else {
       return books.map(book => {
+        let imageLink;
+        {
+          book.imageUrl.length > 0
+            ? (imageLink = book.imageUrl)
+            : (imageLink = defaultBookCover);
+        }
+        console.log("book");
         return (
-          <Card key={book.title} className={classes.card}>
+          <Card key={book.id} className={classes.card}>
             <CardActionArea
               onClick={() => {
                 this.props.history.push(`/books/${book.id}`);
@@ -127,30 +149,11 @@ class BookList extends Component {
             >
               <CardMedia
                 className={classes.media}
-                image={book.imageUrl}
+                image={imageLink}
+                // image={book.imageUrl}
                 title={book.title}
               />
-              {/* <CardContent>
-                <Typography gutterBottom variant="h6" component="h2">
-                  {book.title}
-                </Typography>
-                <Typography component="p">{book.author}</Typography>
-              </CardContent> */}
             </CardActionArea>
-            {/* <CardActions>
-              <Button
-                size="large"
-                fullWidth
-                variant="contained"
-                className={classes.darkButton}
-                onClick={() => {
-                  this.props.history.push(`/books/${book.id}`);
-                }}
-              >
-                View
-              </Button>
-              <br />
-            </CardActions> */}
           </Card>
         );
       });
@@ -163,12 +166,12 @@ class BookList extends Component {
     });
   };
 
-  renderDialogue() {
+  renderDialogue(refetch) {
     return (
       <Mutation
         mutation={createBookMutation}
         onCompleted={() => {
-          this.props.refetch();
+          refetch();
         }}
         onError={this.onError}
       >
@@ -232,14 +235,13 @@ class BookList extends Component {
 
   render() {
     const { classes, match } = this.props;
-    console.log("book props", this.props);
     return (
       <Query
         query={fetchUser}
         errorPolicy="ignore"
         fetchPolicy="cache-and-network"
       >
-        {({ loading, error, data }) => {
+        {({ loading, error, data, refetch }) => {
           const { user } = data;
 
           if (loading) {
@@ -255,7 +257,8 @@ class BookList extends Component {
               <Grid container className={classes.Grid} spacing={24}>
                 {this.renderBookCard(user.books)}
               </Grid>
-              {this.renderDialogue()}
+              {this.renderDialogue(refetch)}
+
               <Fab
                 color="secondary"
                 aria-label="Add"

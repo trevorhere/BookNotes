@@ -59,4 +59,10 @@ BookSchema.statics.updateBook = function(
   });
 };
 
+BookSchema.statics.deleteBook = function(bookID) {
+  return this.findByIdAndDelete(bookID).then(book => {
+    return Promise.all([book.save()]).then(([book]) => book);
+  });
+};
+
 mongoose.model("book", BookSchema);

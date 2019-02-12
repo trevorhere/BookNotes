@@ -312,3 +312,5 @@ class SignupForm extends Component {
 export default graphql(query)(
   graphql(mutation)(withStyles(styles)(SignupForm))
 );
+
+// export default withStyles(styles)(SignupForm);

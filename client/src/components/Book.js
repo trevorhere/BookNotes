@@ -38,10 +38,11 @@ const styles = {
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 100
+    marginTop: 100,
+    flexWrap: "wrap"
   },
   card: {
-    width: 250,
+    maxWidth: 250,
     margin: 5
   },
   media: {
@@ -277,7 +278,7 @@ class Book extends Component {
                         className={classes.innerGrid}
                         item
                         lg={2}
-                        md={1}
+                        md={3}
                         xs={12}
                       >
                         <Card className={classes.card}>
@@ -309,7 +310,7 @@ class Book extends Component {
                         className={classes.innerGrid}
                         item
                         lg={4}
-                        md={11}
+                        md={9}
                         xs={12}
                       >
                         <Paper className={classes.paper}>

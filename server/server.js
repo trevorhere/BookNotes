@@ -45,10 +45,6 @@ app.use(
   })
 );
 
-app.post("/bookSearch/", (req, res) => {
-  console.log("book Search hit");
-});
-
 // const webpackMiddleware = require('webpack-dev-middleware');
 // const webpack = require('webpack');
 // const webpackConfig = require('../webpack.config.js');

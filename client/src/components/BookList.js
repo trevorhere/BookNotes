@@ -191,9 +191,20 @@ class BookList extends Component {
     });
 
     this.handleClose();
-    refetch();
-    this.props.data.refetch();
-    refetch();
+
+    // refetch();
+    // this.props.data.refetch();
+    // this.props.data.refetch();
+    setTimeout(function() {
+      if (true) {
+        console.log("time out running");
+        refetch();
+      }
+    }, 200);
+
+    // setTimeout();
+    // console.log("sposed to refetch");
+    // refetch();
   };
 
   renderBookCard(books) {
@@ -332,7 +343,11 @@ class BookList extends Component {
     // console.log("props", this.props);
 
     return (
-      <Query query={fetchUser} errorPolicy="ignore" fetchPolicy="no-cache">
+      <Query
+        query={fetchUser}
+        errorPolicy="ignore"
+        fetchPolicy="cache-and-network"
+      >
         {({ loading, error, data, refetch }) => {
           const { user } = data;
 

@@ -4,6 +4,7 @@ const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLNonNull } = graphql;
 
 const UserType = require("./user_type");
 const BookType = require("./book_type");
+const BookSearchType = require("./bookSearch_type");
 
 // const ListType = require("./list_type");
 // const TaskType = require("./task_type");

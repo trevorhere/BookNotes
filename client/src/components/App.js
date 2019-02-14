@@ -10,8 +10,8 @@ import BookList from "./BookList";
 import Book from "./Book";
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
-
 import "./styles/App.css";
+const dotenv = require("dotenv").config();
 
 const App = props => {
   return (

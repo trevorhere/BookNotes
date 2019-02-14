@@ -1,8 +1,10 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { graphql, compose, Mutation, Query } from "react-apollo";
 import fetchUser from "../gql/queries/CurrentUser";
 import createBookMutation from "../gql/mutations/CreateBook";
 import Loading from "./Loading";
+import StyledDialog from "./StyledDialog";
 import defaultBookCover from "../assets/noBookCover.png";
 
 import {
@@ -19,11 +21,21 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
-  Grid
+  Grid,
+  AppBar,
+  Slide,
+  Toolbar,
+  IconButton,
+  CloseIcon,
+  List,
+  ListItem,
+  ListItemText,
+  Divider
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 const moment = require("moment");
+
 const styles = {
   card: {
     height: 300,
@@ -50,6 +62,14 @@ const styles = {
   check: {
     width: "80vw"
   },
+  secondaryFab: {
+    margin: 0,
+    top: "auto",
+    right: 120,
+    bottom: 20,
+    left: "auto",
+    position: "fixed"
+  },
 
   fab: {
     backgroundColor: "primary",
@@ -74,21 +94,59 @@ const styles = {
     fontWeight: "100",
     marginTop: "30vh",
     width: "100%"
+  },
+  dialogPaper: {
+    color: "white !important"
+  },
+  appBar: {
+    position: "relative"
+  },
+  flex: {
+    flex: 1
+  },
+
+  multilineColor: {
+    color: "white !important"
   }
 };
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />;
+}
 
 class BookList extends Component {
   constructor(props) {
     super(props);
+
+    this.searchForBook = this.searchForBook.bind(this);
+    this.renderSearchResults = this.renderSearchResults.bind(this);
 
     this.state = {
       open: false,
       imageUrl: "",
       title: "",
       author: "",
-      snack: false
+      snack: false,
+      searchResults: []
     };
   }
+
+  searchForBook = (event, keyword) => {
+    event.preventDefault();
+
+    fetch(`/bookSearch/${keyword}`)
+      .then(response => {
+        return response.json();
+      })
+      .then(responseJson => {
+        this.setState({
+          searchResults: responseJson
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -111,18 +169,31 @@ class BookList extends Component {
     this.setState({ close: false });
   };
 
-  dialogueSubmit = addBook => {
-    const { imageUrl, title, author } = this.state;
+  dialogueSubmit = (addBook, book, refetch) => {
+    console.log("book", book);
+    const { image, title, author } = book;
+
+    if (!image) {
+      image = defaultBookCover;
+    }
     let createdAt = moment().format("MM/DD/YY");
     let userID = this.props.data.user.id;
 
     addBook({
-      variables: { userID, imageUrl, title, author, createdAt },
+      variables: {
+        userID,
+        imageUrl: image,
+        title,
+        author,
+        createdAt
+      },
       refetchQueries: [{ fetchUser }]
     });
 
-    this.props.data.refetch();
     this.handleClose();
+    refetch();
+    this.props.data.refetch();
+    refetch();
   };
 
   renderBookCard(books) {
@@ -140,7 +211,7 @@ class BookList extends Component {
             ? (imageLink = book.imageUrl)
             : (imageLink = defaultBookCover);
         }
-        console.log("book");
+        // console.log("book");
         return (
           <Card key={book.id} className={classes.card}>
             <CardActionArea
@@ -167,81 +238,101 @@ class BookList extends Component {
     });
   };
 
-  renderDialogue(refetch) {
-    return (
-      <Mutation
-        mutation={createBookMutation}
-        onCompleted={() => {
-          refetch();
-        }}
-        onError={this.onError}
-      >
-        {addBook => {
-          return (
-            <Dialog
-              open={this.state.open}
-              onClose={this.handleClose}
-              aria-labelledby="form-dialog-title"
-            >
-              <DialogTitle id="form-dialog-title">Add Book</DialogTitle>
-              <DialogContent>
-                <DialogContentText>{}</DialogContentText>
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="imageUrl"
-                  label="Image Url"
-                  type="text"
-                  onChange={this.handleChange("imageUrl")}
-                  fullWidth
-                />
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="title"
-                  label="Title"
-                  type="text"
-                  onChange={this.handleChange("title")}
-                  fullWidth
-                />
-                <TextField
-                  autoFocus
-                  margin="dense"
-                  id="author"
-                  label="Author"
-                  type="text"
-                  onChange={this.handleChange("author")}
-                  fullWidth
-                />
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={this.handleClose} color="secondary">
-                  Cancel
-                </Button>
-                <Button
+  renderSearchResults = (results, refetch) => {
+    return results.map((book, i) => {
+      return (
+        <Mutation
+          mutation={createBookMutation}
+          onCompleted={() => {
+            console.log("mutation complete");
+            refetch();
+          }}
+          onError={this.onError}
+        >
+          {addBook => {
+            return (
+              <ListItem key={i} button>
+                <ListItemText
                   onClick={() => {
-                    this.dialogueSubmit(addBook);
+                    this.dialogueSubmit(addBook, book, refetch);
                   }}
-                  color="secondary"
-                >
-                  Submit
-                </Button>
-              </DialogActions>
-            </Dialog>
-          );
+                  primary={
+                    <Typography variant="h5" style={{ color: "#fff" }}>
+                      {book.title}
+                    </Typography>
+                  }
+                  secondary={
+                    <Typography variant="h6" style={{ color: "#3F5CEA" }}>
+                      {book.author}
+                    </Typography>
+                  }
+                />
+              </ListItem>
+            );
+          }}
+        </Mutation>
+      );
+    });
+  };
+
+  renderDialogue(refetch) {
+    const { classes, match } = this.props;
+
+    return (
+      <Dialog
+        className={classes.dialogPaper}
+        PaperProps={{
+          style: {
+            backgroundColor: "#1F2627",
+            boxShadow: "none",
+            padding: 50,
+            paddingTop: 150,
+            color: "white"
+          }
         }}
-      </Mutation>
+        fullScreen
+        open={this.state.open}
+        onClose={this.handleClose}
+        TransitionComponent={Transition}
+      >
+        <div className={classes.dialogPaper}>
+          <TextField
+            autoFocus
+            margin="none"
+            id="imageUrl"
+            label="Search"
+            type="text"
+            InputProps={{
+              classes: {
+                input: classes.multilineColor
+              }
+            }}
+            onChange={event => this.searchForBook(event, event.target.value)}
+            fullWidth
+          />
+          <List>
+            {this.renderSearchResults(this.state.searchResults, refetch)}
+          </List>
+          <DialogActions>
+            <Button
+              className={classes.fab}
+              onClick={this.handleClose}
+              color="secondary"
+            >
+              Cancel
+            </Button>
+          </DialogActions>
+        </div>
+      </Dialog>
     );
   }
 
   render() {
     const { classes, match } = this.props;
+    // console.log("props", this.props);
+
     return (
-      <Query
-        query={fetchUser}
-        errorPolicy="ignore"
-        fetchPolicy="cache-and-network"
-      >
+      <Query query={fetchUser} errorPolicy="ignore" fetchPolicy="no-cache">
         {({ loading, error, data, refetch }) => {
           const { user } = data;
 
@@ -260,6 +351,7 @@ class BookList extends Component {
               </Grid>
               {this.renderDialogue(refetch)}
 
+              <div />
               <Fab
                 color="secondary"
                 aria-label="Add"
@@ -275,5 +367,9 @@ class BookList extends Component {
     );
   }
 }
+
+BookList.propTypes = {
+  classes: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(BookList);

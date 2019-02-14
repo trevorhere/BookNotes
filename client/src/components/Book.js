@@ -230,7 +230,7 @@ class Book extends Component {
       <Query
         query={fetchBook}
         errorPolicy="ignore"
-        fetchPolicy="cache-and-network"
+        // fetchPolicy="cache-and-network"
         variables={{ bookID: this.props.match.params.bookID }}
         onCompleted={data => {
           if (this.state.loaded) {

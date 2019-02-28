@@ -7,6 +7,7 @@ export default gql`
     $title: String
     $author: String
     $createdAt: String
+    $infoLink: String
   ) {
     addBook(
       userID: $userID
@@ -14,10 +15,12 @@ export default gql`
       title: $title
       author: $author
       createdAt: $createdAt
+      infoLink: $infoLink
     ) {
       id
       title
       author
+      infoLink
     }
   }
 `;

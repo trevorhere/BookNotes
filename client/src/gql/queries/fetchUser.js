@@ -8,9 +8,11 @@ export default gql`
       email
       fullName
       books {
+        id
         title
         author
         notes
+        infoLink
       }
     }
   }

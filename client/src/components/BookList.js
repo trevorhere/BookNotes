@@ -4,6 +4,7 @@ import { graphql, compose, Mutation, Query } from "react-apollo";
 import fetchUser from "../gql/queries/CurrentUser";
 import createBookMutation from "../gql/mutations/CreateBook";
 import Loading from "./Loading";
+import BookGrid from "./BookGrid";
 import StyledDialog from "./StyledDialog";
 import defaultBookCover from "../assets/noBookCover.png";
 
@@ -11,6 +12,8 @@ import {
   Card,
   CardActionArea,
   CardMedia,
+  CardContent,
+  CardActions,
   Button,
   Typography,
   withStyles,
@@ -20,6 +23,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Paper,
   TextField,
   Grid,
   AppBar,
@@ -30,13 +34,25 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  ListItemIcon,
+  SwipeableDrawer,
+  Switch,
+  Popper,
+  Fade
 } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 
 const moment = require("moment");
 
 const styles = {
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignSelf: "center",
+    overflow: "hidden",
+    margin: "3%"
+  },
   card: {
     height: 300,
     width: 200,
@@ -51,14 +67,7 @@ const styles = {
     backgroundSize: "cover",
     backgroundColor: "#000"
   },
-  root: {
-    display: "flex",
-    flexWrap: "wrap",
-    alignSelf: "center",
-    justifyContent: "start",
-    overflow: "hidden",
-    marginTop: 100
-  },
+
   check: {
     width: "80vw"
   },
@@ -80,9 +89,18 @@ const styles = {
     left: "auto",
     position: "fixed"
   },
+  leftFab: {
+    backgroundColor: "primary",
+    margin: 0,
+    top: "auto",
+    left: 20,
+    bottom: 20,
+    right: "auto",
+    position: "fixed"
+  },
   Grid: {
     justifyContent: "center",
-    border: "1px solid red"
+    margin: "2%"
   },
   title: {
     display: "flex",
@@ -107,6 +125,28 @@ const styles = {
 
   multilineColor: {
     color: "white !important"
+  },
+  cssOutlinedInput: {
+    "&$cssFocused $notchedOutline": {
+      borderColor: `white !important`
+    }
+  },
+  cssLabel: {
+    color: "white"
+  },
+  cssFocused: {},
+  notchedOutline: {},
+
+  cardField: {
+    color: "white !important"
+  },
+  menuCard: {
+    backgroundColor: "#0d0e0f !important",
+    margin: "4%",
+    minWidth: 40
+  },
+  menuCardButton: {
+    marginLeft: 20
   }
 };
 
@@ -123,50 +163,55 @@ class BookList extends Component {
 
     this.state = {
       open: false,
+      sort: "none",
       imageUrl: "",
       title: "",
       author: "",
       snack: false,
-      searchResults: []
+      searchResults: [],
+      typingTimeout: 0,
+      typing: false,
+      checked: false,
+      menu: false
     };
   }
 
   searchForBook = (event, keyword) => {
     event.preventDefault();
 
-    fetch(`/bookSearch/${keyword}`)
-      .then(response => {
-        return response.json();
-      })
-      .then(responseJson => {
-        this.setState({
-          searchResults: responseJson
-        });
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    if (this.state.typingTimeout) {
+      clearTimeout(this.state.typingTimeout);
+    }
+
+    setTimeout({}, this.typingTimeout);
+
+    this.typingTimeout = setTimeout(
+      fetch(`/bookSearch/${keyword}`)
+        .then(response => {
+          return response.json();
+        })
+        .then(responseJson => {
+          this.setState({
+            searchResults: responseJson
+          });
+        })
+        .catch(error => {
+          console.error(error);
+        }),
+
+      this.typingTimeout
+    );
   };
 
   handleClickOpen = () => {
     this.setState({ open: true });
   };
+
+  handleMenu = () => {
+    this.setState({ menu: !this.state.menu });
+  };
   handleClose = () => {
     this.setState({ open: false });
-  };
-
-  snackOpen = () => {
-    this.setState({ snack: true });
-  };
-
-  snackTimedClose = () => {
-    setTimeout(() => {
-      return this.snackClose();
-    }, 5000);
-  };
-
-  snackClose = () => {
-    this.setState({ close: false });
   };
 
   dialogueSubmit = (addBook, book, refetch) => {
@@ -206,42 +251,6 @@ class BookList extends Component {
     // console.log("sposed to refetch");
     // refetch();
   };
-
-  renderBookCard(books) {
-    const { classes, match } = this.props;
-
-    if (!books.length) {
-      return (
-        <Typography className={classes.title}>No Books Added Yet</Typography>
-      );
-    } else {
-      return books.map(book => {
-        let imageLink;
-        {
-          book.imageUrl.length > 0
-            ? (imageLink = book.imageUrl)
-            : (imageLink = defaultBookCover);
-        }
-        // console.log("book");
-        return (
-          <Card key={book.id} className={classes.card}>
-            <CardActionArea
-              onClick={() => {
-                this.props.history.push(`/books/${book.id}`);
-              }}
-            >
-              <CardMedia
-                className={classes.media}
-                image={imageLink}
-                // image={book.imageUrl}
-                title={book.title}
-              />
-            </CardActionArea>
-          </Card>
-        );
-      });
-    }
-  }
 
   handleChange = name => event => {
     this.setState({
@@ -313,11 +322,20 @@ class BookList extends Component {
             id="imageUrl"
             label="Search"
             type="text"
-            InputProps={{
+            InputLabelProps={{
               classes: {
-                input: classes.multilineColor
+                root: classes.multilineColor,
+                focused: classes.multilineColor
               }
             }}
+            InputProps={{
+              classes: {
+                input: classes.multilineColor,
+                root: classes.multilineColor,
+                focused: classes.multilineColor
+              }
+            }}
+            className={classes.cardField}
             onChange={event => this.searchForBook(event, event.target.value)}
             fullWidth
           />
@@ -339,8 +357,7 @@ class BookList extends Component {
   }
 
   render() {
-    const { classes, match } = this.props;
-    // console.log("props", this.props);
+    const { classes } = this.props;
 
     return (
       <Query
@@ -349,24 +366,26 @@ class BookList extends Component {
         fetchPolicy="cache-and-network"
       >
         {({ loading, error, data, refetch }) => {
-          const { user } = data;
-
           if (loading) {
             return <Loading loading={this.props.data.loading} />;
-          } else if (error || !user) {
+          } else if (error || !data.user) {
+            console.log(error);
+
             return <div>error: {error}...</div>;
           }
+          const { user } = data;
 
           return (
             <div className={classes.root}>
-              <br />
-              <br />
-              <Grid container className={classes.Grid} spacing={24}>
-                {this.renderBookCard(user.books)}
-              </Grid>
+              <BookGrid
+                history={this.props.history}
+                sort={this.state.sort}
+                books={user.books}
+                menu={this.state.menu}
+              />
               {this.renderDialogue(refetch)}
-
               <div />
+
               <Fab
                 color="secondary"
                 aria-label="Add"

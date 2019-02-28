@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { graphql, compose, Mutation, Query } from "react-apollo";
+import fileDownload from "js-file-download";
+import DraftExporter from "draft-js-exporter";
 import fetchBook from "../gql/queries/fetchBook";
 import updateBookMutation from "../gql/mutations/UpdateBook";
 import deleteBookMutation from "../gql/mutations/DeleteBook";
@@ -30,6 +32,7 @@ import {
   Fade
 } from "@material-ui/core";
 import DeleteForeverIcon from "@material-ui/icons/DeleteForever";
+const res = require("../assets/Trevor_Lane_Resume.pdf");
 
 const styles = {
   root: {
@@ -101,15 +104,53 @@ class Book extends Component {
       data: {},
       loaded: false,
       open: false,
-      snack: false
+      snack: false,
+      saveAvailable: false,
+      ubm: null
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  onEditorStateChange = editorState => {
+  exportPdf() {
+    // // var file = new Blob([res], {
+    // //   type: "application/pdf"
+    // // });
+    // // // saveAs(file, "filename.pdf");
+    // // var reader = new window.FileReader();
+    // // reader.readAsDataURL(file);
+    // // reader.onloadend = function() {
+    // //   var base64data = reader.result;
+    // //   window.open(base64data);
+    // // };
+    // // fileDownload(res, "filename.pdf");
+    // let rawDraftContentBlock = convertToRaw(this.state.editorState);
+    // let exporter = new DraftExporter(rawDraftContentBlock);
+    // let contentExported = exporter.export();
+  }
+  componentWillUnmount() {
+    const { author, title, imageUrl } = this.state;
+    let bookID = this.props.match.params.bookID;
+    let notes = JSON.stringify(
+      convertToRaw(this.state.editorState.getCurrentContent())
+    );
+
+    this.props.mutate({
+      variables: { bookID, imageUrl, title, author, notes }
+    });
+  }
+  onEditorStateChange = (editorState, updateBook) => {
     this.setState({
       editorState
     });
+
+    // if (this.state.saveAvailable) {
+    //   this.saveChanges(updateBook);
+    //   this.setState({ saveAvailable: false });
+    // } else {
+    //   setTimeout(this.setState({ saveAvailable: true }), 10000);
+    // }
+
+    this.snackOpen();
   };
 
   handleChange(value) {
@@ -225,7 +266,7 @@ class Book extends Component {
   render() {
     const { classes, match } = this.props;
     const { editorState } = this.state;
-
+    console.log("bookProps", this.props);
     return (
       <Query
         query={fetchBook}
@@ -273,6 +314,11 @@ class Book extends Component {
               {updateBook => {
                 return (
                   <div className={classes.root}>
+                    {/* <Button onClick={this.exportPdf}>
+                      <a href={res} download>
+                        Test
+                      </a>
+                    </Button> */}
                     <Grid container className={classes.Grid} spacing={24}>
                       <Grid
                         className={classes.innerGrid}
@@ -282,28 +328,25 @@ class Book extends Component {
                         xs={12}
                       >
                         <Card className={classes.card}>
-                          <CardActionArea>
-                            <CardMedia
-                              className={classes.media}
-                              image={book.imageUrl}
-                              title={book.title}
-                            />
-                            <CardContent>
-                              <Typography
-                                gutterBottom
-                                variant="h5"
-                                component="h2"
-                              >
-                                {book.title}
-                              </Typography>
-                              <Typography component="p">
-                                {book.author}
-                              </Typography>
-                              <Typography component="p">
-                                Added: {book.createdAt}
-                              </Typography>
-                            </CardContent>
-                          </CardActionArea>
+                          <CardActionArea />
+                          <CardMedia
+                            className={classes.media}
+                            image={book.imageUrl}
+                            title={book.title}
+                          />
+                          <CardContent>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="h2"
+                            >
+                              {book.title}
+                            </Typography>
+                            <Typography component="p">{book.author}</Typography>
+                            <Typography component="p">
+                              Added: {book.createdAt}
+                            </Typography>
+                          </CardContent>
                         </Card>
                       </Grid>
                       <Grid
@@ -319,7 +362,9 @@ class Book extends Component {
                             toolbarClassName="toolbarClassName"
                             wrapperClassName="wrapperClassName"
                             editorClassName="editorClassName"
-                            onEditorStateChange={this.onEditorStateChange}
+                            onEditorStateChange={editorState => {
+                              this.onEditorStateChange(editorState, updateBook);
+                            }}
                           />
                         </Paper>
                         {this.renderDialogue(refetch)}
@@ -343,6 +388,7 @@ class Book extends Component {
                     </Fab>
                     <Button
                       onClick={() => {
+                        this.saveChanges(updateBook);
                         this.props.history.push(`/books`);
                       }}
                       color="secondary"
@@ -374,4 +420,4 @@ class Book extends Component {
   }
 }
 
-export default withStyles(styles)(Book);
+export default graphql(updateBookMutation)(withStyles(styles)(Book));

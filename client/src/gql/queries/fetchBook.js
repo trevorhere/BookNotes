@@ -9,6 +9,7 @@ export default gql`
       imageUrl
       createdAt
       notes
+      infoLink
     }
   }
 `;

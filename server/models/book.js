@@ -8,6 +8,7 @@ const BookSchema = new Schema(
     notes: String,
     createdAt: String,
     imageUrl: String,
+    infoLink: String,
     readers: [
       {
         type: Schema.Types.ObjectId,
@@ -29,13 +30,14 @@ BookSchema.statics.addBook = function(
   imageUrl,
   title,
   author,
-  createdAt
+  createdAt,
+  infoLink
 ) {
   const User = mongoose.model("user");
   const Book = mongoose.model("book");
 
   return User.findById(userID).then(user => {
-    const book = new Book({ imageUrl, title, author, createdAt });
+    const book = new Book({ imageUrl, title, author, createdAt, infoLink });
     user.books.push(book);
     return Promise.all([book.save(), user.save()]).then(([book, user]) => book);
   });

@@ -14,7 +14,8 @@ const BookType = new GraphQLObjectType({
     author: { type: GraphQLString },
     notes: { type: GraphQLString },
     createdAt: { type: GraphQLString },
-    imageUrl: { type: GraphQLString }
+    imageUrl: { type: GraphQLString },
+    infoLink: { type: GraphQLString }
 
     // readers: {
     //   type: GraphQLList(UserType),

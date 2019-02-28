@@ -75,10 +75,21 @@ const mutation = new GraphQLObjectType({
         imageUrl: { type: GraphQLString },
         title: { type: GraphQLString },
         author: { type: GraphQLString },
-        createdAt: { type: GraphQLString }
+        createdAt: { type: GraphQLString },
+        infoLink: { type: GraphQLString }
       },
-      resolve(parentValue, { userID, imageUrl, title, author, createdAt }) {
-        return Book.addBook(userID, imageUrl, title, author, createdAt);
+      resolve(
+        parentValue,
+        { userID, imageUrl, title, author, createdAt, infoLink }
+      ) {
+        return Book.addBook(
+          userID,
+          imageUrl,
+          title,
+          author,
+          createdAt,
+          infoLink
+        );
       }
     },
     deleteBook: {

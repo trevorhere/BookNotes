@@ -48,11 +48,11 @@ if (!isDev && cluster.isMaster) {
         return response.json();
       })
       .then(responseJson => {
-        // console.log(responseJson["items"].volumeInfo);
+        //     console.log(responseJson["items"].volumeInfo);
 
         let bookArr = [];
         responseJson["items"].forEach(book => {
-          console.log("book", book);
+          //   console.log("book", book);
           let image = "";
           if (
             book.volumeInfo.imageLinks &&
@@ -63,7 +63,8 @@ if (!isDev && cluster.isMaster) {
           bookArr.push({
             title: `${book.volumeInfo.title}`,
             author: `${book.volumeInfo.authors}`,
-            image: image
+            image: image,
+            infoLink: `${book.volumeInfo.infoLink}`
           });
         });
 
